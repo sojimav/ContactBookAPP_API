@@ -1,4 +1,6 @@
-﻿using ContactBookAPP.CloudinaryDetails;
+﻿using ContactBookAPP.Authentication.Interface;
+using ContactBookAPP.Authentication.Logic;
+using ContactBookAPP.CloudinaryDetails;
 using ContactBookAPP.Context;
 using ContactBookAPP.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -12,6 +14,7 @@ namespace ContactBookAPP.Extension
 {
     public static class ConfigureServices
 	{
+		private static readonly IJWTSecretKeyGenerator? _jWTSecretKey;
 		public static void AddDependencies(this IServiceCollection services, IConfiguration configuration)
 		{
 			services.AddDbContext<UserDbContext>(options => options
@@ -23,7 +26,9 @@ namespace ContactBookAPP.Extension
 			services.AddIdentity<Persons, Role>()
 				.AddEntityFrameworkStores<UserDbContext>().AddDefaultTokenProviders();
 
+			services.AddScoped<IJWTSecretKeyGenerator, JWTSecretKeyGenerator>();
 
+			var secretKey = _jWTSecretKey?.GenerateJwtSecretKey(64);
 			// Configure JWT authentication
 			services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 		.AddJwtBearer(options =>
@@ -31,13 +36,14 @@ namespace ContactBookAPP.Extension
 			options.TokenValidationParameters = new TokenValidationParameters
 			{
 				ValidateIssuerSigningKey = true,
-				IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes("YourJwtSecretKey")),
+				IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes("secretKey")),
 				ValidateIssuer = false,
 				ValidateAudience = false
 			};
 		});
+
+			
 		}
-
-
+		
 	}
 }

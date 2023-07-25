@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 
 namespace ContactBookAPP.Models
 {
-	public class UserContact :IdentityUser
+	public class Persons :IdentityUser
     {
 		public string FirstName { get; set; } = string.Empty;
 		public string LastName { get; set; } = string.Empty;

@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ContactBookAPP.Context
 {
-	public class UserDbContext : IdentityDbContext<UserContact>
+	public class UserDbContext : IdentityDbContext<Persons, Role, string>
 	{
 		public DbSet<Role> Roles { get; set; }
 		public UserDbContext(DbContextOptions<UserDbContext> options) : base(options) { }
@@ -14,12 +14,12 @@ namespace ContactBookAPP.Context
 		{
 			base.OnModelCreating(modelBuilder);
 
-			modelBuilder.Entity<UserContact>()
+			modelBuilder.Entity<Persons>()
 				.HasMany(u => u.Roles)
 				.WithMany()
 				.UsingEntity<IdentityUserRole<int>>(
 				 ur => ur.HasOne<Role>().WithMany(),
-				ur => ur.HasOne<UserContact>().WithMany()
+				ur => ur.HasOne<Persons>().WithMany()
 				);
 				
 		}
