@@ -14,7 +14,7 @@ namespace ContactBookAPP.Extension
 {
     public static class ConfigureServices
 	{
-		private static readonly IJWTSecretKeyGenerator? _jWTSecretKey;
+		//private static readonly IJWTSecretKeyGenerator? _jWTSecretKey;
 		public static void AddDependencies(this IServiceCollection services, IConfiguration configuration)
 		{
 			services.AddDbContext<UserDbContext>(options => options
@@ -24,21 +24,26 @@ namespace ContactBookAPP.Extension
 			services.AddScoped<CloudinaryService>();
 
 			services.AddIdentity<Persons, Role>()
-				.AddEntityFrameworkStores<UserDbContext>().AddDefaultTokenProviders();
+				.AddEntityFrameworkStores<UserDbContext>()
+				.AddDefaultTokenProviders();	
+			
+			services.AddScoped<IAuthenticationService, AuthenticationService>();
 
-			services.AddScoped<IJWTSecretKeyGenerator, JWTSecretKeyGenerator>();
+			//var secretKey = _jWTSecretKey?.GenerateJwtSecretKey(64);
+			  // Configure JWT authentication
 
-			var secretKey = _jWTSecretKey?.GenerateJwtSecretKey(64);
-			// Configure JWT authentication
 			services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 		.AddJwtBearer(options =>
 		{
 			options.TokenValidationParameters = new TokenValidationParameters
 			{
-				ValidateIssuerSigningKey = true,
-				IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes("secretKey")),
-				ValidateIssuer = false,
-				ValidateAudience = false
+				ValidateIssuer = true,
+				ValidateAudience = true,
+				ValidAudience = configuration["AuthSettings:Audience"],
+				ValidIssuer = configuration["AuthSettings:Issuer"],
+				RequireExpirationTime = true,
+				IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["AuthSettings:Key"]!)),
+				ValidateIssuerSigningKey = true
 			};
 		});
 
