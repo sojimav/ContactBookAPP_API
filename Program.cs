@@ -1,5 +1,4 @@
-using ContactBookAPP.Authentication.Interface;
-using ContactBookAPP.Authentication.Logic;
+
 using ContactBookAPP.Extension;
 
 var builder = WebApplication.CreateBuilder(args);

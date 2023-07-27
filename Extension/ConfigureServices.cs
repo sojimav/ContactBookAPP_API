@@ -1,5 +1,4 @@
-﻿using ContactBookAPP.Authentication.Interface;
-using ContactBookAPP.Authentication.Logic;
+﻿
 using ContactBookAPP.CloudinaryDetails;
 using ContactBookAPP.Context;
 using ContactBookAPP.Models;
@@ -14,7 +13,6 @@ namespace ContactBookAPP.Extension
 {
     public static class ConfigureServices
 	{
-		//private static readonly IJWTSecretKeyGenerator? _jWTSecretKey;
 		public static void AddDependencies(this IServiceCollection services, IConfiguration configuration)
 		{
 			services.AddDbContext<UserDbContext>(options => options
@@ -27,10 +25,7 @@ namespace ContactBookAPP.Extension
 				.AddEntityFrameworkStores<UserDbContext>()
 				.AddDefaultTokenProviders();	
 			
-			services.AddScoped<IAuthenticationService, AuthenticationService>();
-
-			//var secretKey = _jWTSecretKey?.GenerateJwtSecretKey(64);
-			  // Configure JWT authentication
+			//services.AddScoped<ICrudeService, CrudeImplementation>();
 
 			services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 		.AddJwtBearer(options =>
